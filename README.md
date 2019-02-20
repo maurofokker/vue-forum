@@ -179,3 +179,122 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
     </div>
   </template>
   ```
+
+### Routing
+
+Using the official _VueJS_ router plugin `vue-router` allows to create _SPA_ mapping components to routes
+
+- Router is included by _vue cli_ when we generated the application and selected that option in the template
+- _vue cli_ template create for `src/router/index.js`
+  ```jsx
+  import Vue from 'vue'
+  import Router from 'vue-router'
+  import HelloWorld from '@/components/HelloWorld'
+
+  Vue.use(Router)
+
+  export default new Router({
+    routes: [
+      {
+        path: '/',
+        name: 'Hello',
+        component: HelloWorld
+      }
+    ],
+    mode: 'history'
+  })
+  ```
+  - imports `vue` and `vue-router`
+  - export an instance of `Router` with some options
+  - declares an array of `routes` objects that match a component to a path:
+    - _path_: declares a path _/_ (root)
+    - _name_: identify route with a name [named routes](https://router.vuejs.org/guide/essentials/named-routes.html)
+    - _component_: match declared path to a component
+  - `mode: 'history'` will remove the hashtag (http://localhost:8080/#/threads -> http://localhost:8080/threads) in the url to allow history navigation btw components
+
+- If we recall the `main.js` file the router is passed as an option to the `Vue` instance
+- All application components will aware of the router and it gives access to special components like the `<router-view>` declared in `src/App.vue`
+
+#### Steps to create a new component and declaring a dynamic route to it
+
+1. Create the component inside `src/components` folder
+  ```jsx
+  <template>
+    <div class="col-large push-top">
+      <h1>{{ thread.title }}</h1>
+
+      <div class="post-list">
+        <div v-for="postId in thread.posts" class="post">
+          <div class="user-info">
+            <a href="#" class="user-name">{{ users[posts[postId].userId].name }}</a>
+
+            <a href="#">
+              <img :src="users[posts[postId].userId].avatar" alt class="avatar-large">
+            </a>
+
+            <p class="desktop-only text-small">107 posts</p>
+          </div>
+
+          <div class="post-content">
+            <div>{{ posts[postId].text }}</div>
+          </div>
+
+          <div class="post-date text-faded">{{ posts[postId].publishedAt }}</div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <script>
+  import sourceData from '@/data'
+
+  export default {
+    props: {
+      id: {
+        required: true,
+        type: String
+      }
+    },
+    data () {
+      return {
+        thread: sourceData.threads[this.id],
+        posts: sourceData.posts,
+        users: sourceData.users
+      }
+    }
+  }
+  </script>
+  ```
+  - Component can contain `<template>`, `<script>` (this is required) and `<styles>` [reference](https://vuejs.org/v2/guide/components.html)
+  - `<template>` is what it is rendered by the component
+  - Inside `<script>` is declared the _vue component_
+    - Component defines a property called `props` when expect one or more of thems. _Props_ are the way components can accept data from components that include them (parent components) [reference 1](https://vuejs.org/v2/guide/components-props.html), [reference 2](https://flaviocopes.com/vue-props/)
+2. Import the component into `src/router/index.js` where routes are declared
+  ```jsx
+  import Vue from 'vue'
+  import Router from 'vue-router'
+  import HelloWorld from '@/components/HelloWorld'
+  import ThreadShow from '@/components/ThreadShow'
+
+  Vue.use(Router)
+
+  export default new Router({
+    routes: [
+      {
+        path: '/',
+        name: 'Hello',
+        component: HelloWorld
+      },
+      {
+        path: '/threads/:id',
+        name: 'threadShow',
+        component: ThreadShow,
+        props: true
+      }
+    ],
+    mode: 'history'
+  })
+  ```
+  - `path` declares a path to a specific thread using dynamic segment (_:[dynamic_segment]_)
+  - `props: true` allows the router to pass params to components as properties this is because by default route expose dynamic segments in components with *_this.$route.params.[dynamic_segment]_* but this is not ideal because the component will be tightly coupled to the router
+3. Now the new component can be accessed with the route `http://localhost:8080/threads/:id` -> `http://localhost:8080/threads/-KsjpzIeFTdcsBIPvUfP`
