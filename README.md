@@ -298,3 +298,125 @@ Using the official _VueJS_ router plugin `vue-router` allows to create _SPA_ map
   - `path` declares a path to a specific thread using dynamic segment (_:[dynamic_segment]_)
   - `props: true` allows the router to pass params to components as properties this is because by default route expose dynamic segments in components with *_this.$route.params.[dynamic_segment]_* but this is not ideal because the component will be tightly coupled to the router
 3. Now the new component can be accessed with the route `http://localhost:8080/threads/:id` -> `http://localhost:8080/threads/-KsjpzIeFTdcsBIPvUfP`
+
+
+#### Components, props and computed properties
+
+It is a good design to split components into smaller ones and pass resources between them using props
+
+- In this example 2 new components were created [`ThreadList` and `ThreadListItem`] in order to list the items and to display the item content
+- The parent component `HelloWorld.vue` will use `ThreadList` component passing _threads_ as props and will import the child component
+  ```jsx
+  <template>
+    <div class="col-full">
+      <h1>Welcome to the forum</h1>
+      <ThreadList :threads="threads" />
+    </div>
+  </template>
+
+  <script>
+  import sourceData from '../data.json'
+  import ThreadList from './ThreadList'
+
+  export default {
+    name: 'HelloWorld',
+    components: {
+      ThreadList
+    },
+    data () {
+      return {
+        threads: Object.values(sourceData.threads), // return an array of values
+        posts: sourceData.posts,
+        users: sourceData.users
+      }
+    }
+  }
+  </script>
+  ```
+  - `:threads` is the props passed to the `ThreadList` child component
+
+- The parent component `ThreadList.vue` will use `ThreadListItem` component passing props and using `v-for` directive to display threads passed by its parent component `HelloWorld`
+  ```jsx
+  <template>
+    <div class="thread-list">
+      <h2 class="list-title">Threads</h2>
+      <ThreadListItem
+        v-for="thread in threads"
+        :thread="thread"
+        :key="thread['.key']"
+      />
+    </div>
+  </template>
+
+  <script>
+  import ThreadListItem from './ThreadListItem'
+
+  export default {
+    components: {
+      ThreadListItem
+    },
+
+    props: {
+      threads: {
+        required: true,
+        type: Array
+      }
+    }
+  }
+  </script>
+  ```
+  - `:thread` property passed to `ThreadListItem` child component
+  - When generating multiple sub components is mandatory to have a `:key` property
+  - `components: {}` object declare components loaded
+  - `props: {}` declare properties passed from parent component
+
+- Component `ThreadListItem.vue` will display data passed from parent component in the properties
+```jsx
+<template>
+  <div class="thread">
+    <div>
+      <p>
+        <a href="#">{{ thread.title }}</a>
+      </p>
+      <p class="text-faded text-xsmall">By
+        <a href="#">{{ user.name }}</a>,{{ thread.publishedAt }}
+      </p>
+    </div>
+
+    <div class="activity">
+      <p class="replies-count">{{ repliesCount }} replies</p>
+
+      <!-- <img src="http://" alt class="avatar-medium">
+
+      <span>
+        <a href="#" class="text-xsmall">John Dow</a>
+        <p class="text-faded text-xsmall">1 month ago</p>
+      </span> -->
+    </div>
+  </div>
+</template>
+
+<script>
+import sourceData from '@/data'
+
+export default {
+  props: {
+    thread: {
+      required: true,
+      type: Object
+    }
+  },
+  computed: {
+    repliesCount () {
+      return Object.keys(this.thread.posts).length - 1
+    },
+    user () {
+      return sourceData.users[this.thread.userId]
+    }
+  }
+}
+</script>
+```
+  - `computed () {}` refers to computed properties that are component functions that performs transformations or calculations and they are evaluated every time it dependency changes
+    - When to use `methods`, they are also functions and they perform actions like storing some data, so if a function has side effects should be a method
+    - When to use `computed properties`, when you need to transform data like counting elements in a list, formating a string or filtering an array, also they are great for usability
