@@ -2,10 +2,12 @@
   <div class="thread">
     <div>
       <p>
-        <a href="#">{{ thread.title }}</a>
+        <router-link :to="{ name: 'threadShow', params: {id: thread['.key']}}">{{ thread.title }}</router-link>
       </p>
-      <p class="text-faded text-xsmall">By
-        <a href="#">{{ user.name }}</a>,{{ thread.publishedAt }}
+      <p class="text-faded text-xsmall">
+        By
+        <a href="#">{{ user.name }}</a>
+        ,{{ thread.publishedAt }}
       </p>
     </div>
 
@@ -17,7 +19,7 @@
       <span>
         <a href="#" class="text-xsmall">John Dow</a>
         <p class="text-faded text-xsmall">1 month ago</p>
-      </span> -->
+      </span>-->
     </div>
   </div>
 </template>

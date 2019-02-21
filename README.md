@@ -4,7 +4,7 @@
 
 ## Build Setup
 
-``` bash
+```bash
 # install dependencies
 npm install
 
@@ -26,6 +26,7 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 
 - Vue client [installation](https://cli.vuejs.org/guide/installation.html)
 - Scafolding project with vue
+
 ```bash
   ➜ vue init vueschool/webpack-template vue-forum
 	? Project name vue-forum
@@ -48,7 +49,9 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
    ➜ cd vue-forum
    ➜ npm install
 ```
+
 - Initializing project after dependencies installed
+
 ```bash
 ➜ npm run dev | yarn dev
 ```
@@ -63,7 +66,7 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
     router,
     template: '<App/>',
     components: { App }
-  })
+  });
   ```
   - Vue instance recibe an options object [Full list of options](https://vuejs.org/v2/api/#Options-Data)
   - `el` provide the Vue instance an existing DOM element to mount on
@@ -71,10 +74,11 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
   - `template` to be used as the markup for the Vue instance, it will replace the mounted element
   - `router` attach the router to the Vue instance
 - Declare de `App` vue instance
+
   ```jsx
   <template>
     <div id="app">
-      <!-- -->
+
     </div>
   </template>
 
@@ -88,21 +92,22 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
   //...
   </style>
   ```
+
 - Declaring a component in the application (in this case is `HelloWorld.vue`)
 - To load data in a component can use the `data() {..}` function in the exported component and bind it to component data
   ```js
   export default {
     name: 'HelloWorld',
-    data () {
+    data() {
       // bind data to component data and can be used in the template to render data
       // this can be watched in the vue extension of chrome/firefox
       return {
         threads: sourceData.threads,
         posts: sourceData.posts,
         users: sourceData.users
-      }
+      };
     }
-  }
+  };
   ```
 - To render the data you can use the `<template>` present in the component
   ```jsx
@@ -121,16 +126,18 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
   ```
   - `v-for` is a directive to render a list of items based on an array [reference](https://vuejs.org/v2/guide/list.html)
 - Applying style to the **_app/component_**
+
   1. If it will be used in the whole app and not just the component the style can go globally in the `assets` directory in order to get handled by webpack (minified) (`src/assets/css/style.css`)
   2. Styles can go scoped by components and be declared inside of them
   3. To import a style globally do it in `App.vue` at the end of the file
+
   ```jsx
-  <style>
-    @import "assets/css/style.css";
-  </style>
+  <style>@import "assets/css/style.css";</style>
   ```
+
   4. When you want to import from node modules use `~` provided by the `css-loader` (`import "~bootstrap/css/bootstrap.css"`) this apply for _SASS_ and _LESS_ too
   5. Apply style to the application container `App.vue`
+
   ```jsx
   <template>
     <div id="app">
@@ -141,8 +148,11 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
     </div>
   </template>
   ```
-    - `<router-view>` renders the content of the matched component for given path [reference](https://router.vuejs.org/api/#router-view)
+
+  - `<router-view>` renders the content of the matched component for given path [reference](https://router.vuejs.org/api/#router-view)
+
   6. Apply styles to html elements in component
+
   ```jsx
   <template>
     <div>
@@ -180,18 +190,148 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
   </template>
   ```
 
+### Components
+
+#### Components, props and computed properties
+
+It is a good design to split components into smaller ones and pass resources between them using props
+
+- In this example 2 new components were created [`ThreadList` and `ThreadListItem`] in order to list the items and to display the item content
+- The parent component `HelloWorld.vue` will use `ThreadList` component passing _threads_ as props and will import the child component
+
+  ```jsx
+  <template>
+    <div class="col-full">
+      <h1>Welcome to the forum</h1>
+      <ThreadList :threads="threads" />
+    </div>
+  </template>
+
+  <script>
+  import sourceData from '../data.json'
+  import ThreadList from './ThreadList'
+
+  export default {
+    name: 'HelloWorld',
+    components: {
+      ThreadList
+    },
+    data () {
+      return {
+        threads: Object.values(sourceData.threads), // return an array of values
+        posts: sourceData.posts,
+        users: sourceData.users
+      }
+    }
+  }
+  </script>
+  ```
+
+  - `:threads` is the props passed to the `ThreadList` child component
+
+- The parent component `ThreadList.vue` will use `ThreadListItem` component passing props and using `v-for` directive to display threads passed by its parent component `HelloWorld`
+
+  ```jsx
+  <template>
+    <div class="thread-list">
+      <h2 class="list-title">Threads</h2>
+      <ThreadListItem
+        v-for="thread in threads"
+        :thread="thread"
+        :key="thread['.key']"
+      />
+    </div>
+  </template>
+
+  <script>
+  import ThreadListItem from './ThreadListItem'
+
+  export default {
+    components: {
+      ThreadListItem
+    },
+
+    props: {
+      threads: {
+        required: true,
+        type: Array
+      }
+    }
+  }
+  </script>
+  ```
+
+  - `:thread` property passed to `ThreadListItem` child component
+  - When generating multiple sub components is mandatory to have a `:key` property
+  - `components: {}` object declare components loaded
+  - `props: {}` declare properties passed from parent component
+
+- Component `ThreadListItem.vue` will display data passed from parent component in the properties
+
+```jsx
+<template>
+  <div class="thread">
+    <div>
+      <p>
+        <a href="#">{{ thread.title }}</a>
+      </p>
+      <p class="text-faded text-xsmall">By
+        <a href="#">{{ user.name }}</a>,{{ thread.publishedAt }}
+      </p>
+    </div>
+
+    <div class="activity">
+      <p class="replies-count">{{ repliesCount }} replies</p>
+
+      <!-- <img src="http://" alt class="avatar-medium">
+
+      <span>
+        <a href="#" class="text-xsmall">John Dow</a>
+        <p class="text-faded text-xsmall">1 month ago</p>
+      </span> -->
+    </div>
+  </div>
+</template>
+
+<script>
+import sourceData from '@/data'
+
+export default {
+  props: {
+    thread: {
+      required: true,
+      type: Object
+    }
+  },
+  computed: {
+    repliesCount () {
+      return Object.keys(this.thread.posts).length - 1
+    },
+    user () {
+      return sourceData.users[this.thread.userId]
+    }
+  }
+}
+</script>
+```
+
+- `computed () {}` refers to computed properties that are component functions that performs transformations or calculations and they are evaluated every time it dependency changes
+  - When to use `methods`, they are also functions and they perform actions like storing some data, so if a function has side effects should be a method
+  - When to use `computed properties`, when you need to transform data like counting elements in a list, formating a string or filtering an array, also they are great for usability
+
 ### Routing
 
 Using the official _VueJS_ router plugin `vue-router` allows to create _SPA_ mapping components to routes
 
 - Router is included by _vue cli_ when we generated the application and selected that option in the template
 - _vue cli_ template create for `src/router/index.js`
-  ```jsx
-  import Vue from 'vue'
-  import Router from 'vue-router'
-  import HelloWorld from '@/components/HelloWorld'
 
-  Vue.use(Router)
+  ```jsx
+  import Vue from 'vue';
+  import Router from 'vue-router';
+  import HelloWorld from '@/components/HelloWorld';
+
+  Vue.use(Router);
 
   export default new Router({
     routes: [
@@ -202,8 +342,9 @@ Using the official _VueJS_ router plugin `vue-router` allows to create _SPA_ map
       }
     ],
     mode: 'history'
-  })
+  });
   ```
+
   - imports `vue` and `vue-router`
   - export an instance of `Router` with some options
   - declares an array of `routes` objects that match a component to a path:
@@ -269,14 +410,15 @@ Using the official _VueJS_ router plugin `vue-router` allows to create _SPA_ map
   - `<template>` is what it is rendered by the component
   - Inside `<script>` is declared the _vue component_
     - Component defines a property called `props` when expect one or more of thems. _Props_ are the way components can accept data from components that include them (parent components) [reference 1](https://vuejs.org/v2/guide/components-props.html), [reference 2](https://flaviocopes.com/vue-props/)
+
 2. Import the component into `src/router/index.js` where routes are declared
   ```jsx
-  import Vue from 'vue'
-  import Router from 'vue-router'
-  import HelloWorld from '@/components/HelloWorld'
-  import ThreadShow from '@/components/ThreadShow'
+  import Vue from 'vue';
+  import Router from 'vue-router';
+  import HelloWorld from '@/components/HelloWorld';
+  import ThreadShow from '@/components/ThreadShow';
 
-  Vue.use(Router)
+  Vue.use(Router);
 
   export default new Router({
     routes: [
@@ -293,130 +435,21 @@ Using the official _VueJS_ router plugin `vue-router` allows to create _SPA_ map
       }
     ],
     mode: 'history'
-  })
+  });
   ```
   - `path` declares a path to a specific thread using dynamic segment (_:[dynamic_segment]_)
-  - `props: true` allows the router to pass params to components as properties this is because by default route expose dynamic segments in components with *_this.$route.params.[dynamic_segment]_* but this is not ideal because the component will be tightly coupled to the router
-3. Now the new component can be accessed with the route `http://localhost:8080/threads/:id` -> `http://localhost:8080/threads/-KsjpzIeFTdcsBIPvUfP`
+  - `props: true` allows the router to pass params to components as properties this is because by default route expose dynamic segments in components with _*this.\$route.params.[dynamic_segment]*_ but this is not ideal because the component will be tightly coupled to the router
+3. Now the new component can be accessed with the route `http://localhost:8080/threads/:id` -> `http://localhost:8080/threads/-KsjpzIeFTdcsBIPvUfP`.
 
+#### Using router-link component
 
-#### Components, props and computed properties
+- Allows to prevent the browser from reloading the page in comparison of the use of the `<a>` tag
+- Is available in `router-aware` components
+- The router is already injected in the root Vue instance
 
-It is a good design to split components into smaller ones and pass resources between them using props
-
-- In this example 2 new components were created [`ThreadList` and `ThreadListItem`] in order to list the items and to display the item content
-- The parent component `HelloWorld.vue` will use `ThreadList` component passing _threads_ as props and will import the child component
-  ```jsx
-  <template>
-    <div class="col-full">
-      <h1>Welcome to the forum</h1>
-      <ThreadList :threads="threads" />
-    </div>
-  </template>
-
-  <script>
-  import sourceData from '../data.json'
-  import ThreadList from './ThreadList'
-
-  export default {
-    name: 'HelloWorld',
-    components: {
-      ThreadList
-    },
-    data () {
-      return {
-        threads: Object.values(sourceData.threads), // return an array of values
-        posts: sourceData.posts,
-        users: sourceData.users
-      }
-    }
-  }
-  </script>
-  ```
-  - `:threads` is the props passed to the `ThreadList` child component
-
-- The parent component `ThreadList.vue` will use `ThreadListItem` component passing props and using `v-for` directive to display threads passed by its parent component `HelloWorld`
-  ```jsx
-  <template>
-    <div class="thread-list">
-      <h2 class="list-title">Threads</h2>
-      <ThreadListItem
-        v-for="thread in threads"
-        :thread="thread"
-        :key="thread['.key']"
-      />
-    </div>
-  </template>
-
-  <script>
-  import ThreadListItem from './ThreadListItem'
-
-  export default {
-    components: {
-      ThreadListItem
-    },
-
-    props: {
-      threads: {
-        required: true,
-        type: Array
-      }
-    }
-  }
-  </script>
-  ```
-  - `:thread` property passed to `ThreadListItem` child component
-  - When generating multiple sub components is mandatory to have a `:key` property
-  - `components: {}` object declare components loaded
-  - `props: {}` declare properties passed from parent component
-
-- Component `ThreadListItem.vue` will display data passed from parent component in the properties
 ```jsx
-<template>
-  <div class="thread">
-    <div>
-      <p>
-        <a href="#">{{ thread.title }}</a>
-      </p>
-      <p class="text-faded text-xsmall">By
-        <a href="#">{{ user.name }}</a>,{{ thread.publishedAt }}
-      </p>
-    </div>
-
-    <div class="activity">
-      <p class="replies-count">{{ repliesCount }} replies</p>
-
-      <!-- <img src="http://" alt class="avatar-medium">
-
-      <span>
-        <a href="#" class="text-xsmall">John Dow</a>
-        <p class="text-faded text-xsmall">1 month ago</p>
-      </span> -->
-    </div>
-  </div>
-</template>
-
-<script>
-import sourceData from '@/data'
-
-export default {
-  props: {
-    thread: {
-      required: true,
-      type: Object
-    }
-  },
-  computed: {
-    repliesCount () {
-      return Object.keys(this.thread.posts).length - 1
-    },
-    user () {
-      return sourceData.users[this.thread.userId]
-    }
-  }
-}
-</script>
+  <router-link :to="{ name: 'ThreadShow', params: {id: thread['.key']}}">{{ thread.title }}</router-link>
 ```
-  - `computed () {}` refers to computed properties that are component functions that performs transformations or calculations and they are evaluated every time it dependency changes
-    - When to use `methods`, they are also functions and they perform actions like storing some data, so if a function has side effects should be a method
-    - When to use `computed properties`, when you need to transform data like counting elements in a list, formating a string or filtering an array, also they are great for usability
+  - allows to create a link in the component passing a `to:` property that can be a string with the path or an object
+  - `<router-link :to="`/thread/${thread['.key']}`">` path as a string
+  - `<router-link :to="{ name: 'threadShow', params: {id: thread['.key']}}">` path as an object with name and params declared in the route at `src/router/index.js`. The benefit of using the named router instead of the path is that we can change route's path in `src/router/index.js` without having to update and refactor the app
