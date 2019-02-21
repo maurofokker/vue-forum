@@ -316,7 +316,7 @@ export default {
 ```
 
 - `computed () {}` refers to computed properties that are component functions that performs transformations or calculations and they are evaluated every time it dependency changes
-  - When to use `methods`, they are also functions and they perform actions like storing some data, so if a function has side effects should be a method
+  - When to use `methods`, they are also functions and they performs actions like storing some data, so if a function has side effects should be a method
   - When to use `computed properties`, when you need to transform data like counting elements in a list, formating a string or filtering an array, also they are great for usability
 
 #### Naming components
@@ -324,6 +324,81 @@ export default {
 - Components that are used for presenting and not other things use the prefix `Page` like `PageHome` this helps to separate it from the others components with the eye
 - Keep pages in their own root directory like `src/pages`
 - When importing you can use `@/components/..` the _@_ refers to an alias to the `src` directory, you can find it in `build/webpack.base.conf.js` so it resolves the absolute path
+
+#### Binding data and using component methods
+
+```jsx
+<template>
+  <div class="col-large push-top">
+    <h1>{{ thread.title }}</h1>
+
+    <PostList :posts="posts" />
+    <form @submit.prevent="addPost">
+      <div class="form-group">
+        <textarea
+          name=""
+          id=""
+          cols="30"
+          rows="10"
+          class="form-input"
+          v-model="newPostText"
+        ></textarea>
+      </div>
+      <div class="form-actions">
+        <button class="btn-blue">Submit post</button>
+      </div>
+    </form>
+  </div>
+</template>
+
+<script>
+import sourceData from '@/data'
+import PostList from '@/components/PostList'
+
+export default {
+  components: {
+    PostList
+  },
+  data () {
+    return {
+      thread: sourceData.threads[this.id],
+      newPostText: ''
+    }
+  },
+  computed: {
+    posts () {
+      const postIds = Object.values(this.thread.posts)
+      return Object.values(sourceData.posts)
+        .filter(post => postIds.includes(post['.key']))
+    }
+  },
+  methods: {
+    addPost () {
+      const postId = 'greatPost' + Math.random()    // to be changed later
+      const post = {
+        text: this.newPostText,
+        publishedAt: Math.floor(Date.now() / 1000),
+        threadId: this.id,
+        userId: '7uVPJS9GHoftN58Z2MXCYDqmNAh2',
+        '.key': postId
+      }
+      this.$set(sourceData.posts, postId, post)
+      this.$set(this.thread.posts, postId, postId)
+      this.$set(sourceData.users[post.userId].posts, postId, postId)
+      this.newPostText = ''
+    }
+  }
+}
+</script>
+```
+- `<PostList :posts="posts" />` it will pass _*posts* array_ in the props _:posts_ to _PostList_ child component
+- Two-way binding can be done using `v-model` in the view and will be bound to a data property in the component
+  - Another way to create a two-way binding is using a binding from component to view with `:value="newPostText"` and then binding from view to component using `@input="newPostText = $event.target.value"` (_@input_ === _v-on:input_)
+- `@submit.prevent`: will submit the form and prevent browser reload and will call component method `addPost` declared in the component `methods: { addPost () {} }`
+  - `component methods` performs actions in the component
+- It is necessary to make our data reactive in order to be reflected immediately in the browser, we can do this using `Vue.set(obj, propertyName, value)`
+  - To not import _Vue_ in the component we can use the instance alias this.$set
+  - In the code `sourceData` is our storage so using `this.$set(sourceData.posts, postId, post)` will add the new post into the posts array with a key of _postId_
 
 ### Routing
 
