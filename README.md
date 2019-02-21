@@ -447,7 +447,7 @@ Using the official _VueJS_ router plugin `vue-router` allows to create _SPA_ map
   - `props: true` allows the router to pass params to components as properties this is because by default route expose dynamic segments in components with _*this.\$route.params.[dynamic_segment]*_ but this is not ideal because the component will be tightly coupled to the router
 3. Now the new component can be accessed with the route `http://localhost:8080/threads/:id` -> `http://localhost:8080/threads/-KsjpzIeFTdcsBIPvUfP`.
 
-#### Using router-link component
+#### Using router-link component
 
 - Allows to prevent the browser from reloading the page in comparison of the use of the `<a>` tag
 - Is available in `router-aware` components
@@ -459,3 +459,65 @@ Using the official _VueJS_ router plugin `vue-router` allows to create _SPA_ map
   - allows to create a link in the component passing a `to:` property that can be a string with the path or an object
   - `<router-link :to="`/thread/${thread['.key']}`">` path as a string
   - `<router-link :to="{ name: 'threadShow', params: {id: thread['.key']}}">` path as an object with name and params declared in the route at `src/router/index.js`. The benefit of using the named router instead of the path is that we can change route's path in `src/router/index.js` without having to update and refactor the app
+
+#### Handling 404 pages
+
+- create a presentation page `PageNotFound.vue` (using vetur plugin in vscode write _scaffold_ to have a vue template)
+  ```jsx
+  <template>
+    <div class="col-full">
+      <h1>Not Found</h1>
+      <p>Ooops, we couldn't find what you are looking for. Why don't you
+        <router-link :to="{ name: 'Home' }">go home instead?</router-link>
+      </p>
+    </div>
+  </template>
+
+  <script>
+  export default {
+
+  }
+  </script>
+
+  <style scoped>
+  h1 {
+    font-size: 100px;
+  }
+  p {
+    font-size: 50px;
+    font-weight: 100;
+  }
+  div {
+    text-align: center;
+  }
+  </style>
+  ```
+  - the `<style scoped>` means that the style apply in the scope of the current component
+- add a new route to handle routes not associated to components and import component created above
+  ```jsx
+  import NotFound from '@/pages/PageNotFound'
+
+  Vue.use(Router)
+
+  export default new Router({
+    routes: [
+      {
+        path: '/',
+        name: 'Home',
+        component: Home
+      },
+      {
+        path: '/threads/:id',
+        name: 'threadShow',
+        component: ThreadShow,
+        props: true
+      },
+      {
+        path: '*',
+        name: 'NotFound',
+        component: NotFound
+      }
+    ],
+    mode: 'history'
+  })
+  ```
