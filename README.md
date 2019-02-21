@@ -521,3 +521,44 @@ Using the official _VueJS_ router plugin `vue-router` allows to create _SPA_ map
     mode: 'history'
   })
   ```
+
+### CSS Modules
+
+- Theme and Scoped CSS Styling is essential in a scalable Vue application
+- Using CSS Modules with Webpack allows to have uniques class selectors styles
+- Class selectors are faster than elements selectors because are more specific
+- It is recommended to use class selectors specially in large apps
+- Refactor of scoped css style in `PageNotFound.vue` to css modules
+  ```jsx
+  <template>
+    <div class="col-full" :class="$style.centered">
+      <h1 :class="$style.headingLarge">Not Found</h1>
+      <p :class="$style.textLarge">Ooops, we couldn't find what you are looking for. Why don't you
+        <router-link :to="{ name: 'Home' }">go home instead?</router-link>
+      </p>
+    </div>
+  </template>
+
+  <script>
+  export default {
+
+  }
+  </script>
+
+  <style module>
+  .headingLarge {
+    font-size: 100px;
+  }
+  .textLarge {
+    font-size: 50px;
+    font-weight: 100;
+  }
+  .centered {
+    text-align: center;
+  }
+  </style>
+  ```
+  - style switched scoped to `module` in this way Vue will create the special `$style` property which is an object that contains the classes defined in the `style` tag
+  - change styles to class selectors using camelCase to use dot operator when used in template or if the class names contains dashes you will need to use brackets `$style.textLarge` -> `$style[text-large]`
+  - now in `template` it is possible to _bind_ a class to an element using the *_v-bind_* directive that is the same to write in short using the colon *_:_* so *_v-bind:class_* is the same as *_:class_*
+- At the end Vue will create hashes for the classes names that are unique in the app, you can watch them in the Vue extension (chrome and firefox)
