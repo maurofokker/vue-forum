@@ -460,7 +460,7 @@ Using the official _VueJS_ router plugin `vue-router` allows to create _SPA_ map
   - `<router-link :to="`/thread/${thread['.key']}`">` path as a string
   - `<router-link :to="{ name: 'threadShow', params: {id: thread['.key']}}">` path as an object with name and params declared in the route at `src/router/index.js`. The benefit of using the named router instead of the path is that we can change route's path in `src/router/index.js` without having to update and refactor the app
 
-#### Handling 404 pages
+#### Handling 404 pages
 
 - create a presentation page `PageNotFound.vue` (using vetur plugin in vscode write _scaffold_ to have a vue template)
   ```jsx
