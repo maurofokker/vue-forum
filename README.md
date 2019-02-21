@@ -319,6 +319,12 @@ export default {
   - When to use `methods`, they are also functions and they perform actions like storing some data, so if a function has side effects should be a method
   - When to use `computed properties`, when you need to transform data like counting elements in a list, formating a string or filtering an array, also they are great for usability
 
+#### Naming components
+
+- Components that are used for presenting and not other things use the prefix `Page` like `PageHome` this helps to separate it from the others components with the eye
+- Keep pages in their own root directory like `src/pages`
+- When importing you can use `@/components/..` the _@_ refers to an alias to the `src` directory, you can find it in `build/webpack.base.conf.js` so it resolves the absolute path
+
 ### Routing
 
 Using the official _VueJS_ router plugin `vue-router` allows to create _SPA_ mapping components to routes
