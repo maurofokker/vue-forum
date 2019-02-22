@@ -485,6 +485,44 @@ export default {
   </script>
   ```
 
+#### Using filters
+
+- You can use filters that can be used to apply text formating like dates
+- Yo use a filter you must use a pipe _|_ appended at the end of the js expression
+- filters are chained
+- [Vue filter reference](https://vuejs.org/v2/guide/filters.html)
+- Creating a filter to format dates with [moment.js](https://momentjs.com/)
+  ```jsx
+  <template>
+    <div class="post">
+      <div
+        class="post-date text-faded"
+        :title="post.publishedAt | humanFriendlyDate"
+      >
+      {{ post.publishedAt | diffForHumans }}
+      </div>
+    </div>
+  </template>
+
+  <script>
+  import moment from 'moment'
+
+  export default {
+    // ... props and computed options
+    filters: {
+      humanFriendlyDate (date) {
+        return moment.unix(date).format('MMMM Do YYYY, h:mm:ss a')
+      },
+      diffForHumans (date) {
+        return moment.unix(date).fromNow()
+      }
+    }
+  }
+  </script>
+  ```
+  - You can apply format or transformation using `computer properties` if you have just one property to transform
+  - If you have more than one property then it is better to use `filters` or `component methods` because they can receive parameters
+
 ### Routing
 
 Using the official _VueJS_ router plugin `vue-router` allows to create _SPA_ mapping components to routes
