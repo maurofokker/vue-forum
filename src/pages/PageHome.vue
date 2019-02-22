@@ -2,27 +2,25 @@
 
   <div class="col-full">
     <h1>Welcome to the forum</h1>
-    <ForumList :forums="forums" />
+    <CategoryList :categories="categories" />
   </div>
 </template>
 
 <script>
 // using from '@/data' would work bc '@' means 'src' directory
-import sourceData from '../data.json'
-import ForumList from '../components/ForumList'
+import sourceData from '@/data'
+import CategoryList from '@/components/CategoryList'
 console.log(sourceData)
 
 export default {
   components: {
-    ForumList
+    CategoryList
   },
   data () {
     // bind data to component data and can be used in the template to render data
     // this can be watched in the vue extension of chrome/firefox
     return {
-      forums: Object.values(sourceData.forums),
-      posts: sourceData.posts,
-      users: sourceData.users
+      categories: Object.values(sourceData.categories)
     }
   }
 }
