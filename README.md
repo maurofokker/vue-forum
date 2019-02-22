@@ -571,6 +571,27 @@ When some parts of your code will be used in different places of your applicatio
   ```
   - To avoid importing the base component this can be register globally
 - Register `AppDate.vue` base component in the global scope
+  - `Vue.component(tagName, options)` will register a component in the global scope
+  - This can be done in any component that is loaded in the first use but since `src/main.js` is loaded first than everything it is better do it there
+    ```js
+    import Vue from 'vue'
+    import App from './App'
+    import router from './router'
+    import AppDate from '@/components/AppDate'
+
+    Vue.component('AppDate', AppDate)
+
+    Vue.config.productionTip = false
+
+    /* eslint-disable no-new */
+    new Vue({
+      el: '#app',
+      router,
+      template: '<App/>',
+      components: { App }
+    })
+    ```
+  - Now you can use `<AppDate :timestamp=".." />` in any component without import it
 
 ### Routing
 
