@@ -14,7 +14,11 @@
       <div>{{ post.text }}</div>
     </div>
 
-    <div class="post-date text-faded" :title="post.publishedAt | humanFriendlyDate">{{ post.publishedAt | diffForHumas }}</div>
+    <div
+      class="post-date text-faded"
+      :title="post.publishedAt | humanFriendlyDate">
+      {{ post.publishedAt | diffForHumas }}
+    </div>
   </div>
 </template>
 
