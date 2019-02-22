@@ -37,10 +37,9 @@ export default {
     }
   },
   methods: {
-    addPost (eventData) {
-      console.log(eventData)
-      const post = eventData.post
-      const postId = eventData.post['.key']
+    // using object destructuring of eventData.post to post
+    addPost ({post}) {
+      const postId = post['.key']
       // to make data reactive we need to use Vue.set(obj, propertyName, value)
       // we can use the instance alias this.$set to not import Vue in the component
       this.$set(sourceData.posts, postId, post)
