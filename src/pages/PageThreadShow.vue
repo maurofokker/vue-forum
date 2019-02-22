@@ -3,31 +3,20 @@
     <h1>{{ thread.title }}</h1>
 
     <PostList :posts="posts" />
-    <form @submit.prevent="addPost">
-      <div class="form-group">
-        <textarea
-          name=""
-          id=""
-          cols="30"
-          rows="10"
-          class="form-input"
-          v-model="newPostText"
-        ></textarea>
-      </div>
-      <div class="form-actions">
-        <button class="btn-blue">Submit post</button>
-      </div>
-    </form>
+    <PostEditor @save="addPost" :threadId="id" />
+
   </div>
 </template>
 
 <script>
 import sourceData from '@/data'
 import PostList from '@/components/PostList'
+import PostEditor from '@/components/PostEditor'
 
 export default {
   components: {
-    PostList
+    PostList,
+    PostEditor
   },
   props: {
     id: {
@@ -37,8 +26,7 @@ export default {
   },
   data () {
     return {
-      thread: sourceData.threads[this.id],
-      newPostText: ''
+      thread: sourceData.threads[this.id]
     }
   },
   computed: {
@@ -49,26 +37,17 @@ export default {
     }
   },
   methods: {
-    addPost () {
-      const postId = 'greatPost' + Math.random()    // to be changed later
-      const post = {
-        text: this.newPostText,
-        publishedAt: Math.floor(Date.now() / 1000),
-        threadId: this.id,
-        userId: '7uVPJS9GHoftN58Z2MXCYDqmNAh2',
-        '.key': postId
-      }
-      // sourceData.posts[postId] = post    // done in this way the data will not be reactive (will not have reactive getter and setters)
-      // this.thread.posts[postId] = postId // done in this way the data will not be reactive (will not have reactive getter and setters)
+    addPost (eventData) {
+      console.log(eventData)
+      const post = eventData.post
+      const postId = eventData.post['.key']
       // to make data reactive we need to use Vue.set(obj, propertyName, value)
-      // to not import Vue we can use the instance alias this.$set
+      // we can use the instance alias this.$set to not import Vue in the component
       this.$set(sourceData.posts, postId, post)
       this.$set(this.thread.posts, postId, postId)
 
       // add post to the user so the counter of post will be reflected with this new post
       this.$set(sourceData.users[post.userId].posts, postId, postId)
-      // because is reactive after adding the post in the posts and thread will clean textarea nc is bounding with v-model
-      this.newPostText = ''
     }
   }
 }

@@ -400,6 +400,91 @@ export default {
   - To not import _Vue_ in the component we can use the instance alias this.$set
   - In the code `sourceData` is our storage so using `this.$set(sourceData.posts, postId, post)` will add the new post into the posts array with a key of _postId_
 
+#### Communicate between components
+
+- A child component can communicate to a parent component emitting events with `this.$emit(nameOfEvent, params)`
+- Parent component will listen the event using directive `@nameOfEvent`
+- Child component
+  ```jsx
+  <template>
+    <form @submit.prevent="save">
+        <div class="form-group">
+          <textarea
+            name=""
+            id=""
+            cols="30"
+            rows="10"
+            class="form-input"
+            v-model="text"
+          ></textarea>
+        </div>
+        <div class="form-actions">
+          <button class="btn-blue">Submit post</button>
+        </div>
+    </form>
+  </template>
+
+  <script>
+  export default {
+    props: {
+      threadId: {
+        required: true,
+        type: String
+      }
+    },
+    data () {
+      return {
+        text: ''
+      }
+    },
+    methods: {
+      save () {
+        const postId = 'greatPost' + Math.random()    // to be changed later
+        const post = {
+          text: this.text,
+          publishedAt: Math.floor(Date.now() / 1000),
+          threadId: this.threadId,
+          userId: '7uVPJS9GHoftN58Z2MXCYDqmNAh2',
+          '.key': postId
+        }
+        this.text = ''
+        this.$emit('save', {post})
+      }
+    }
+  }
+  </script>
+  ```
+
+- Parent component
+  ```jsx
+  <template>
+    <div class="col-large push-top">
+      <PostEditor @save="addPost" :threadId="id" />
+    </div>
+  </template>
+
+  <script>
+  export default {
+    components: {
+      PostEditor
+    },
+    props: {
+      id: {
+        required: true,
+        type: String
+      }
+    },
+    methods: {
+      // component method to handle logic
+      addPost (eventData) {
+        console.log(eventData)
+        //  code that handle the event
+      }
+    }
+  }
+  </script>
+  ```
+
 ### Routing
 
 Using the official _VueJS_ router plugin `vue-router` allows to create _SPA_ mapping components to routes
