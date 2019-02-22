@@ -523,6 +523,55 @@ export default {
   - You can apply format or transformation using `computer properties` if you have just one property to transform
   - If you have more than one property then it is better to use `filters` or `component methods` because they can receive parameters
 
+#### Base Components
+
+When some parts of your code will be used in different places of your application you should extract it in a new component, in these cases it is a good practice to create them as [base components](https://vuejs.org/v2/style-guide/#Base-component-names-strongly-recommended) and when the list of base components is large a good thing to avoid including all of thems in differents components is to [register them globally](https://vuejs.org/v2/guide/components-registration.html#Automatic-Global-Registration-of-Base-Components)
+
+- Example of `AppDate.vue` as a base component to separate the date formating filter
+  ```jsx
+  <template>
+    <span :title="timestamp | humanFriendlyDate">{{ timestamp | diffForHumas }}</span>
+  </template>
+
+  <script>
+  import moment from 'moment'
+
+  export default {
+    props: {
+      timestamp: {
+        required: true,
+        type: Number
+      }
+    },
+    filters: {
+      humanFriendlyDate (date) {
+        return moment.unix(date).format('MMMM Do YYYY, h:mm:ss a')
+      },
+      diffForHumas (date) {
+        return moment.unix(date).fromNow()
+      }
+    }
+
+  }
+  </script>
+  ```
+  - look that there is no style applyed
+  - receives a _timestamp_ prop that will be formated using the filter
+- Now it is possible to use the new base component as usual
+  ```jsx
+  <template>
+    <div class="post">
+
+      <div class="post-date text-faded">
+        <AppDate :timestamp="post.publishedAt"/>
+      </div>
+
+    </div>
+  </template>
+  ```
+  - To avoid importing the base component this can be register globally
+- Register `AppDate.vue` base component in the global scope
+
 ### Routing
 
 Using the official _VueJS_ router plugin `vue-router` allows to create _SPA_ mapping components to routes
