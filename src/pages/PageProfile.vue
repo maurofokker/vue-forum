@@ -1,42 +1,15 @@
 <template>
   <div class="flex-grid">
-    <div class="col-3 push-top">
-      <div class="profile-card">
-        <p class="text-center">
-          <img :src="user.avatar" alt class="avatar-xlarge">
-        </p>
 
-        <h1 class="title">{{user.username}}</h1>
+    <!-- <UserProfileCard
+      :user="user"
+      :userPostsCount="userPostsCount"
+      :userThreadsCount="userThreadsCount" /> -->
 
-        <p class="text-lead">{{user.name}}</p>
-
-        <p class="text-justify">
-          <span v-if="user.bio">{{user.bio}}</span>
-          <span v-else>No bio specified.</span>
-          </p>
-
-        <span class="online">{{user.username}} is online</span>
-
-        <div class="stats">
-          <span>{{userPostCount}} posts</span>
-          <span>{{userThreadsCount}} threads</span>
-        </div>
-
-        <hr>
-
-        <p v-if="user.website" class="text-large text-center">
-          <i class="fa fa-globe"></i>
-          <a :href="user.website">{{user.website}}</a>
-        </p>
-      </div>
-
-      <p class="text-xsmall text-faded text-center">Member since june 2003, last visited 4 hours ago</p>
-
-      <div class="text-center">
-        <hr>
-        <a href="edit-profile.html" class="btn-green btn-small">Edit Profile</a>
-      </div>
-    </div>
+    <UserProfileCardEditor
+      :user="user"
+      :userPostsCount="userPostsCount"
+      :userThreadsCount="userThreadsCount" />
 
     <div class="col-7 push-top">
       <div class="profile-header">
@@ -53,13 +26,17 @@
 
 <script>
 import PostList from '@/components/PostList'
+import UserProfileCard from '@/components/UserProfileCard'
+import UserProfileCardEditor from '@/components/UserProfileCardEditor'
 import { mapGetters } from 'vuex'
 import { countObjectProperties } from '@/utils'
 
 export default {
 
   components: {
-    PostList
+    PostList,
+    UserProfileCard,
+    UserProfileCardEditor
   },
 
   computed: {
@@ -67,7 +44,7 @@ export default {
       'user': 'authUser'  // user maps to authUser getter in the store
     }),
 
-    userPostCount () {
+    userPostsCount () {
       return countObjectProperties(this.user.posts)
     },
 
