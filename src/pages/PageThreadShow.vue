@@ -9,7 +9,7 @@
     </p>
 
     <PostList :posts="posts" />
-    <PostEditor @save="addPost" :threadId="id" />
+    <PostEditor :threadId="id" />
 
   </div>
 </template>
