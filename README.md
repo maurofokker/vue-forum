@@ -600,6 +600,77 @@ When some parts of your code will be used in different places of your applicatio
  - They don't accept props
  - They should use the `The` prefix in their names (_TheNavbar_, _TheSidebar_, _TheFooter_, _TheHeading_)
 
+#### Toggle between components
+
+ - We can share page components to let the user toggle between two of them, one to edit data and the other to just view the data
+ - This can be done using a router path to each component and difference between them by a boolean prop
+
+ ```js
+ // router
+ export default new Router({
+  routes: [
+    {
+      path: '/me',
+      name: 'Profile',
+      component: Profile,
+      props: true
+    },
+    {
+      path: '/me/edit',
+      name: 'ProfileEdit',
+      component: Profile,
+      props: {edit: true}
+    }
+  ],
+  mode: 'history'
+})
+ ```
+ - In path `/me/edit` we are passing directly a prop object with value true that will help to toggle btw components
+ - We are using the same component
+
+  ```jsx
+  // PageProfile.vew aka component: 'Profile'
+  <template>
+    <div class="flex-grid">
+
+      <UserProfileCard
+        v-if="!edit"
+        :user="user"
+        :userPostsCount="userPostsCount"
+        :userThreadsCount="userThreadsCount" />
+
+      <UserProfileCardEditor
+        v-else
+        :user="user"
+        :userPostsCount="userPostsCount"
+        :userThreadsCount="userThreadsCount" />
+
+    </div>
+  </template>
+  <script>
+  import UserProfileCard from '@/components/UserProfileCard'
+  import UserProfileCardEditor from '@/components/UserProfileCardEditor'
+
+  export default {
+
+    components: {
+      UserProfileCard,
+      UserProfileCardEditor
+    },
+
+    props: {
+      edit: {
+        type: Boolean,
+        default: false
+      }
+    }
+
+  }
+  </script>
+  ```
+  - Toggle between components based on the property pased
+
+- To navigate to an specific component we can push the route like this `this.$router.push({name: 'Profile'})` see `UserProfileCardEditor.vue` file for reference
 
 ### Routing
 
