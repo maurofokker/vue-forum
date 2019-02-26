@@ -30,21 +30,24 @@ export default new Vuex.Store({
     },
 
     createThread ({commit, state, dispatch}, {text, title, forumId}) {
-      const threadId = 'greatThread' + Math.random()
-      const userId = state.authId
-      const publishedAt = Math.floor(Date.now() / 1000)
-      const thread = {
-        '.key': threadId,
-        title,
-        forumId,
-        userId,
-        publishedAt
-      }
-      commit('setThread', {thread, threadId})
-      commit('appendThreadToForum', {forumId, threadId})
-      commit('appendThreadToUser', {userId, threadId})
+      return new Promise((resolve, reject) => {
+        const threadId = 'greatThread' + Math.random()
+        const userId = state.authId
+        const publishedAt = Math.floor(Date.now() / 1000)
+        const thread = {
+          '.key': threadId,
+          title,
+          forumId,
+          userId,
+          publishedAt
+        }
+        commit('setThread', {thread, threadId})
+        commit('appendThreadToForum', {forumId, threadId})
+        commit('appendThreadToUser', {userId, threadId})
 
-      dispatch('createPost', {text, threadId}) // is the post object destructured
+        dispatch('createPost', {text, threadId}) // is the post object destructured
+        resolve(state.threads[threadId])  // resolve returning the whole new thread object
+      })
     },
 
     updateUser ({commit}, user) {
