@@ -33,9 +33,7 @@ export default {
     save () {
       const post = {
         text: this.text,
-        publishedAt: Math.floor(Date.now() / 1000),
-        threadId: this.threadId,
-        userId: '7uVPJS9GHoftN58Z2MXCYDqmNAh2'
+        threadId: this.threadId
       }
       // this.$store.state.posts[postId] = post    // done in this way the data will not be reactive (will not have reactive getter and setters)
       // this.thread.posts[postId] = postId // done in this way the data will not be reactive (will not have reactive getter and setters)
