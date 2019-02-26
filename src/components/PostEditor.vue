@@ -31,13 +31,11 @@ export default {
   },
   methods: {
     save () {
-      const postId = 'greatPost' + Math.random()    // to be changed later
       const post = {
         text: this.text,
         publishedAt: Math.floor(Date.now() / 1000),
         threadId: this.threadId,
-        userId: '7uVPJS9GHoftN58Z2MXCYDqmNAh2',
-        '.key': postId
+        userId: '7uVPJS9GHoftN58Z2MXCYDqmNAh2'
       }
       // this.$store.state.posts[postId] = post    // done in this way the data will not be reactive (will not have reactive getter and setters)
       // this.thread.posts[postId] = postId // done in this way the data will not be reactive (will not have reactive getter and setters)
@@ -48,7 +46,9 @@ export default {
       // this is how we pass an event to the parent so it is the parent who handle the logic
       // first parameter is the name of the event and the rest are other params
       // it is better to wrap it in an object (using es6 where key and value are the same)
-      this.$emit('save', {post})
+      this.$emit('save', {post}) // event is good here in case parent component need to do something on save like hide the editor
+      // dispatch can be done here since it wont add a lot of complexity to the save method
+      this.$store.dispatch('createPost', post)
     }
   }
 }

@@ -41,19 +41,6 @@ export default {
       return Object.values(this.$store.state.posts)
         .filter(post => postIds.includes(post['.key']))
     }
-  },
-  methods: {
-    // using object destructuring of eventData.post to post
-    addPost ({post}) {
-      const postId = post['.key']
-      // to make data reactive we need to use Vue.set(obj, propertyName, value)
-      // we can use the instance alias this.$set to not import Vue in the component
-      this.$set(this.$store.state.posts, postId, post)
-      this.$set(this.thread.posts, postId, postId)
-
-      // add post to the user so the counter of post will be reflected with this new post
-      this.$set(this.$store.state.users[post.userId].posts, postId, postId)
-    }
   }
 }
 </script>
