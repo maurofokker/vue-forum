@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import sourceData from '@/data'
+
 import PostList from '@/components/PostList'
 import PostEditor from '@/components/PostEditor'
 
@@ -32,13 +32,13 @@ export default {
   },
   data () {
     return {
-      thread: sourceData.threads[this.id]
+      thread: this.$store.state.threads[this.id]
     }
   },
   computed: {
     posts () {
       const postIds = Object.values(this.thread.posts)
-      return Object.values(sourceData.posts)
+      return Object.values(this.$store.state.posts)
         .filter(post => postIds.includes(post['.key']))
     }
   },
@@ -48,11 +48,11 @@ export default {
       const postId = post['.key']
       // to make data reactive we need to use Vue.set(obj, propertyName, value)
       // we can use the instance alias this.$set to not import Vue in the component
-      this.$set(sourceData.posts, postId, post)
+      this.$set(this.$store.state.posts, postId, post)
       this.$set(this.thread.posts, postId, postId)
 
       // add post to the user so the counter of post will be reflected with this new post
-      this.$set(sourceData.users[post.userId].posts, postId, postId)
+      this.$set(this.$store.state.users[post.userId].posts, postId, postId)
     }
   }
 }
