@@ -44,13 +44,13 @@ export default {
         title,
         text
       }).then(thread => {
-        this.$router.push({name: 'threadShow', params: {id: thread['.key']}})
+        this.$router.push({name: 'threadShow', params: {id: this.id}})
       })
     },
 
     cancel () {
       console.log('FORUM', this.thread)
-      this.$router.push({name: 'Forum', params: {id: this.thread.forumId}})
+      this.$router.push({name: 'threadShow', params: {id: this.id}})
     }
   }
 }
