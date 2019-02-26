@@ -22,6 +22,8 @@
 </template>
 
 <script>
+import { countObjectProperties } from '@/utils'
+
 export default {
   props: {
     post: {
@@ -34,9 +36,7 @@ export default {
       return this.$store.state.users[this.post.userId]
     },
     userPostsCount () {
-      const postIds = this.user.posts
-      const postIdsArray = Object.keys(postIds)
-      return postIdsArray.length
+      return countObjectProperties(this.user.posts)
     }
   }
 }
