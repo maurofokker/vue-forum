@@ -30,7 +30,7 @@ export default new Router({
       props: true
     },
     {
-      path: '/threads/create',  // this one goes first bc the next one is a dynamic segment and it is evaluated top to bottom
+      path: '/threads/create/:forumId',  // this one goes first bc the next one is a dynamic segment and it is evaluated top to bottom
       name: 'ThreadCreate',
       component: ThreadCreate,
       props: true
