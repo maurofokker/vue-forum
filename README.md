@@ -593,6 +593,14 @@ When some parts of your code will be used in different places of your applicatio
     ```
   - Now you can use `<AppDate :timestamp=".." />` in any component without import it
 
+#### Single-Instance components
+
+ - It doesn't mean it is going to be used in a single page
+ - It means it will be used once per page
+ - They don't accept props
+ - They should use the `The` prefix in their names (_TheNavbar_, _TheSidebar_, _TheFooter_, _TheHeading_)
+
+
 ### Routing
 
 Using the official _VueJS_ router plugin `vue-router` allows to create _SPA_ mapping components to routes
