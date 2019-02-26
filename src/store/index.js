@@ -5,7 +5,17 @@ import sourceData from '@/data'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  state: sourceData,
+
+  state: {
+    ...sourceData,
+    authId: 'rpbB8C6ifrYmNDufMERWfQUoa202'
+  },
+
+  getters: {
+    authUser (state) {
+      return state.users[state.authId]
+    }
+  },
 
   actions: {
     createPost (context, post) {

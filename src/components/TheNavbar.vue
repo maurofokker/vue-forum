@@ -21,11 +21,11 @@
           <a href="#">
             <img
               class="avatar-small"
-              src="https://firebasestorage.googleapis.com/v0/b/forum-2a982.appspot.com/o/images%2Favatars%2Frah?alt=media&token=7ad21914-a4f4-4ad0-add6-17e6d3ae9679"
-              alt
+              :src="user.avatar"
+              alt=""
             >
             <span>
-              Alex Kyriakidis
+              {{user.name}}
               <img class="icon-profile" src="../assets/img/arrow-profile.svg" alt>
             </span>
           </a>
@@ -71,7 +71,15 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
+
+  computed: {
+    ...mapGetters({
+      'user': 'authUser'  // user maps to authUser getter in the store
+    })
+  }
 
 }
 </script>
