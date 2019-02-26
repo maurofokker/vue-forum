@@ -8,7 +8,7 @@ export default new Vuex.Store({
 
   state: {
     ...sourceData,
-    authId: 'rpbB8C6ifrYmNDufMERWfQUoa202'
+    authId: '7uVPJS9GHoftN58Z2MXCYDqmNAh2'
   },
 
   getters: {
