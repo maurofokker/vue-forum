@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Home from '@/pages/PageHome'
 import Profile from '@/pages/PageProfile'
 import ThreadShow from '@/pages/PageThreadShow'
+import ThreadCreate from '@/pages/PageThreadCreate'
 import NotFound from '@/pages/PageNotFound'
 import Forum from '@/pages/PageForum'
 import Category from '@/pages/PageCategory'
@@ -26,6 +27,12 @@ export default new Router({
       path: '/forums/:id',
       name: 'Forum',
       component: Forum,
+      props: true
+    },
+    {
+      path: '/threads/create',  // this one goes first bc the next one is a dynamic segment and it is evaluated top to bottom
+      name: 'ThreadCreate',
+      component: ThreadCreate,
       props: true
     },
     {
