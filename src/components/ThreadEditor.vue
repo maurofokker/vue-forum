@@ -2,13 +2,13 @@
   <form @submit.prevent="save">
     <div class="form-group">
       <label for="thread_title">Title:</label>
-      <input v-model="title" type="text" id="thread_title" class="form-input" name="title">
+      <input v-model="form.title" type="text" id="thread_title" class="form-input" name="title">
     </div>
 
     <div class="form-group">
       <label for="thread_content">Content:</label>
       <textarea
-        v-model="text"
+        v-model="form.text"
         id="thread_content"
         class="form-input"
         name="content"
@@ -27,16 +27,30 @@
 <script>
 export default {
 
+  props: {
+    title: {
+      type: String,
+      default: ''
+    },
+    text: {
+      type: String,
+      default: ''
+    }
+  },
+
+  // local data properties
   data () {
     return {
-      title: '',
-      text: ''
+      form: {
+        title: this.title,
+        text: this.text
+      }
     }
   },
 
   methods: {
     save () {
-      this.$emit('save', {title: this.title, text: this.text})
+      this.$emit('save', {title: this.form.title, text: this.form.text})
     },
 
     cancel () {

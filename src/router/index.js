@@ -4,6 +4,7 @@ import Home from '@/pages/PageHome'
 import Profile from '@/pages/PageProfile'
 import ThreadShow from '@/pages/PageThreadShow'
 import ThreadCreate from '@/pages/PageThreadCreate'
+import ThreadEdit from '@/pages/PageThreadEdit'
 import NotFound from '@/pages/PageNotFound'
 import Forum from '@/pages/PageForum'
 import Category from '@/pages/PageCategory'
@@ -39,6 +40,12 @@ export default new Router({
       path: '/threads/:id',
       name: 'threadShow',
       component: ThreadShow,
+      props: true
+    },
+    {
+      path: '/threads/:id/edit',
+      name: 'ThreadEdit',
+      component: ThreadEdit,
       props: true
     },
     {
