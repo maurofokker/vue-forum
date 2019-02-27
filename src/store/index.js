@@ -5,6 +5,15 @@ import {countObjectProperties} from '@/utils'
 
 Vue.use(Vuex)
 
+const makeAppendChildToParentMutation = ({parent, child}) =>
+  (state, {childId, parentId}) => {
+    const resource = state[parent][parentId]
+    if (!resource[child]) {
+      Vue.set(resource, child, {})
+    }
+    Vue.set(resource[child], childId, childId)
+  }
+
 export default new Vuex.Store({
 
   state: {
@@ -29,8 +38,10 @@ export default new Vuex.Store({
       post.publishedAt = Math.floor(Date.now() / 1000)
 
       commit('setPost', {post, postId})
-      commit('appendPostToThread', {threadId: post.threadId, postId})
-      commit('appendPostToUser', {userId: post.userId, postId})
+      // commit('appendPostToThread', {threadId: post.threadId, postId})
+      // commit('appendPostToUser', {userId: post.userId, postId})
+      commit('appendPostToThread', {parentId: post.threadId, childId: postId})
+      commit('appendPostToUser', {parentId: post.userId, childId: postId})
       return Promise.resolve(state.posts[postId])
     },
 
@@ -47,8 +58,8 @@ export default new Vuex.Store({
           publishedAt
         }
         commit('setThread', {thread, threadId})
-        commit('appendThreadToForum', {forumId, threadId})
-        commit('appendThreadToUser', {userId, threadId})
+        commit('appendThreadToForum', {parentId: forumId, childId: threadId})
+        commit('appendThreadToUser', {parentId: userId, childId: threadId})
 
         dispatch('createPost', {text, threadId}) // is the post object destructured
           .then(post => {
@@ -114,41 +125,23 @@ export default new Vuex.Store({
       Vue.set(state.threads, threadId, thread)
     },
 
-    appendPostToThread (state, {postId, threadId}) {
-      // Vue.set(this.thread.posts, postId, postId)
-      const thread = state.threads[threadId]
-      // util in case of new threads bc they dont have a post property
-      // We need to make sure the post object exist before adding the postId
-      if (!thread.posts) {
-        Vue.set(thread, 'posts', {})
-      }
-      Vue.set(thread.posts, postId, postId)
-    },
+    // appendPostToThread (state, {postId, threadId}) {
+    //   // Vue.set(this.thread.posts, postId, postId)
+    //   const thread = state.threads[threadId]
+    //   // util in case of new threads bc they dont have a post property
+    //   // We need to make sure the post object exist before adding the postId
+    //   if (!thread.posts) {
+    //     Vue.set(thread, 'posts', {})
+    //   }
+    //   Vue.set(thread.posts, postId, postId)
+    // },
+    appendPostToThread: makeAppendChildToParentMutation({parent: 'threads', child: 'posts'}),
 
-    appendPostToUser (state, {postId, userId}) {
-      // Vue.set(this.$store.state.users[post.userId].posts, postId, postId)
-      const user = state.users[userId]
-      if (!user.posts) {
-        Vue.set(user, 'posts', {})
-      }
-      Vue.set(user.posts, postId, postId)
-    },
+    appendPostToUser: makeAppendChildToParentMutation({parent: 'users', child: 'posts'}),
 
-    appendThreadToForum (state, {forumId, threadId}) {
-      const forum = state.forums[forumId]
-      if (!forum.threads) {
-        Vue.set(forum, 'threads', {})
-      }
-      Vue.set(forum.threads, threadId, threadId)
-    },
+    appendThreadToForum: makeAppendChildToParentMutation({parent: 'forums', child: 'threads'}),
 
-    appendThreadToUser (state, {threadId, userId}) {
-      const user = state.users[userId]
-      if (!user.threads) {
-        Vue.set(user, 'threads', {})
-      }
-      Vue.set(user.threads, threadId, threadId)
-    }
+    appendThreadToUser: makeAppendChildToParentMutation({parent: 'users', child: 'threads'})
 
   }
 })
