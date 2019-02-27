@@ -75,6 +75,8 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         const post = state.posts[id]
         commit('setPost', {postId: id, post: {...post, text}})
+
+        resolve(post)
       })
     },
 
