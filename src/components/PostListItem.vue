@@ -23,7 +23,8 @@
       <div v-else>
         <PostEditor
           :post="post"
-          @save="editing = false"/>
+          @save="editing = false"
+          @cancel="editing = false"/>
       </div>
     </div>
 

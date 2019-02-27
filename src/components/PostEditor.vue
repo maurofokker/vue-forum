@@ -11,7 +11,8 @@
         ></textarea>
       </div>
       <div class="form-actions">
-        <button class="btn-blue">Submit post</button>
+        <button v-if="isUpdate" @click.prevent="cancel" class="btn btn-ghost">Cancel</button>
+        <button class="btn-blue">{{isUpdate ? 'Update' : 'Submit post'}}</button>
       </div>
   </form>
 </template>
@@ -69,6 +70,10 @@ export default {
     persist () {
       // this will return a promise
       return this.isUpdate ? this.update() : this.create()
+    },
+
+    cancel () {
+      this.$emit('cancel')
     }
   }
 }
