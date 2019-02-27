@@ -11,7 +11,12 @@
     </div>
 
     <div class="post-content">
-      <div>{{ post.text }}</div>
+      <div v-if="!editing">{{ post.text }}</div>
+      <div v-else>
+        <PostEditor
+          :post="post"
+          @save="editing = false"/>
+      </div>
     </div>
 
     <div class="post-date text-faded">
@@ -23,14 +28,27 @@
 
 <script>
 import { countObjectProperties } from '@/utils'
+import PostEditor from '@/components/PostEditor'
 
 export default {
+
+  components: {
+    PostEditor
+  },
+
   props: {
     post: {
       required: true,
       type: Object
     }
   },
+
+  data () {
+    return {
+      editing: false
+    }
+  },
+
   computed: {
     user () {
       return this.$store.state.users[this.post.userId]
