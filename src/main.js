@@ -13,7 +13,8 @@ Vue.config.productionTip = false
 
 // Initialize Firebase
 const config = {
-  // firebase web keys configd
+  // firebase web keys config
+
 }
 firebase.initializeApp(config)
 
