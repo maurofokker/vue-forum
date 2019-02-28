@@ -56,6 +56,25 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 ➜ npm run dev | yarn dev
 ```
 
+### Vue instance lifecycle hooks
+
+- [Full reference](https://vuejs.org/v2/guide/instance.html#Instance-Lifecycle-Hooks)
+- Gives the opportunity to add code at specific stages
+- Each hook are colled with their `this` context pointing to the Vue instance invoking it. Don't use `arrow functions` because their are bounded to the parent context then `this` will not be bounded to the Vue instance
+
+#### Lifecycle
+
+- [component-lifecycle](https://alligator.io/vuejs/component-lifecycle/)
+
+- `beforeCreate` hook before injections and reacitivity
+- `created` hook can be used to run code after an instance is created
+- `beforeMount`
+- `mounted`
+- `beforeUpdate`
+- `updated`
+- `beforeDestroy`
+- `destroyed`
+
 ### Applications components
 
 - Fake data model can be found in `src/data.json` this will be changed later to use firebase
