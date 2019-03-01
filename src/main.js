@@ -24,5 +24,10 @@ new Vue({
   router,
   store,
   template: '<App/>',
-  components: { App }
+  components: { App },
+  // bc we r running an async call and no access any instance option we can use beforeCreate hook
+  // this gives an extra time to load
+  beforeCreate () {
+    store.dispatch('fetchUser', {id: store.state.authId})
+  }
 })
