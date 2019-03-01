@@ -696,6 +696,14 @@ When some parts of your code will be used in different places of your applicatio
 - Data is loaded in different speed and as a result can appear in random order
 - It is a good practice to increase ux hide the data until it is ready in our state
 - While data is being fetched we can show a loading indicator
+- If this is repeated in many pages it is a good idea to use mixins to reuse the functionality
+
+#### Mixins
+
+- Flexible way to distribute reusable functionabilities for Vue components
+- A mixin object can contain any component options
+- Options in the mixin object are 'mixed' with the options of the component that uses
+- [Vue documentation](https://vuejs.org/v2/guide/mixins.html)
 
 ### Routing
 
