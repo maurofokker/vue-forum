@@ -691,6 +691,12 @@ When some parts of your code will be used in different places of your applicatio
 
 - To navigate to an specific component we can push the route like this `this.$router.push({name: 'Profile'})` see `UserProfileCardEditor.vue` file for reference
 
+#### Working with async data
+
+- Data is loaded in different speed and as a result can appear in random order
+- It is a good practice to increase ux hide the data until it is ready in our state
+- While data is being fetched we can show a loading indicator
+
 ### Routing
 
 Using the official _VueJS_ router plugin `vue-router` allows to create _SPA_ mapping components to routes
