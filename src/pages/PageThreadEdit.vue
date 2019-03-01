@@ -1,5 +1,5 @@
 <template>
-  <div class="col-full push-top">
+  <div v-if="thread && text" class="col-full push-top">
     <h1>Editing <i>{{thread.title}}</i></h1>
 
     <ThreadEditor
@@ -32,7 +32,8 @@ export default {
     },
     // first post of the thread text
     text () {
-      return this.$store.state.posts[this.thread.firstPostId].text
+      const post = this.$store.state.posts[this.thread.firstPostId]
+      return post ? post.text : null
     }
   },
 
@@ -52,6 +53,11 @@ export default {
       console.log('FORUM', this.thread)
       this.$router.push({name: 'threadShow', params: {id: this.id}})
     }
+  },
+
+  created () {
+    this.$store.dispatch('fetchThread', {id: this.id})
+      .then(thread => this.$store.dispatch('fetchPost', {id: thread.firstPostId}))
   }
 }
 </script>
