@@ -697,6 +697,44 @@ When some parts of your code will be used in different places of your applicatio
 - It is a good practice to increase ux hide the data until it is ready in our state
 - While data is being fetched we can show a loading indicator
 - If this is repeated in many pages it is a good idea to use mixins to reuse the functionality
+- In case we want to create a loading indicator to every page before async data are fully loaded in the state we can use 
+`vue-router` [global before guards](https://router.vuejs.org/guide/advanced/navigation-guards.html#global-before-guards)
+  ```jsx
+  <template>
+    <div id="app">
+      <TheNavbar />
+      <div class="container">
+        <router-view v-show="showPage" @ready="showPage = true"/>
+        <div v-show="!showPage">...loading</div>
+      </div>
+    </div>
+  </template>
+  
+  <script>
+  import TheNavbar from '@/components/TheNavbar'
+  export default {
+    components: {
+      TheNavbar
+    },
+    data () {
+      return {
+        showPage: false
+      }
+    },
+    created () {
+      this.$router.beforeEach((to, from, next) => {
+        this.showPage = false
+        next()
+      })
+    }
+  }
+  </script>
+  ```
+  - `this.$router.beforeEach((to, from, next)` the navigation is considered _pending_ before all hooks have been resolved
+  - `to` the target Route Object being navigated to.
+  - `from` the current route being navigated away from.
+  - `next` this function must be called to resolve the hook
+    - `next()` move on to the next hook in the pipeline. If no hooks are left, the navigation is confirmed.
 
 #### Mixins
 
