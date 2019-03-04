@@ -36,7 +36,7 @@
 
       </form>
       <div class="text-center push-top">
-        <button class="btn-red btn-xsmall"><i class="fa fa-google fa-btn"></i>Sign up with Google</button>
+        <button @click.prevent="registerWithGoogle" class="btn-red btn-xsmall"><i class="fa fa-google fa-btn"></i>Sign up with Google</button>
       </div>
     </div>
   </div>
@@ -60,6 +60,10 @@
         console.log(this.form)
         // this.$store.dispatch('createUser', this.form)
         this.$store.dispatch('registerUserWithEmailAndPassword', this.form)
+          .then(() => this.$router.push('/'))
+      },
+      registerWithGoogle () {
+        this.$store.dispatch('signInWithGoogle', this.form)
           .then(() => this.$router.push('/'))
       }
     },

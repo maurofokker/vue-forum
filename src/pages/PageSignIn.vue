@@ -24,7 +24,7 @@
       </form>
 
       <div class="push-top text-center">
-        <button class="btn-red btn-xsmall"><i class="fa fa-google fa-btn"></i>Sign in with Google</button>
+        <button @click="signInWithGoogle" class="btn-red btn-xsmall"><i class="fa fa-google fa-btn"></i>Sign in with Google</button>
       </div>
     </div>
   </div>
@@ -48,6 +48,11 @@
         })
           .then(() => this.$router.push('/')) // redirect if sign in is success
           .catch(error => alert(':/ ' + error.message)) // alert error
+      },
+      signInWithGoogle () {
+        this.$store.dispatch('signInWithGoogle')
+          .then(() => this.$router.push('/'))
+          .catch(error => alert('🤷‍️' + error.message))
       }
     },
 

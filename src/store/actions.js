@@ -87,15 +87,31 @@ export default {
         const user = response.user
         return dispatch('createUser', {id: user.uid, email, name, username, password, avatar})
       })
-      // .then(({user}) => {
-      //   return dispatch('createUser', {id: user.uid, email, name, username, password, avatar})
-      // })
+      .then(() => dispatch('fetchAuthUser'))
   },
 
   // here we dont need to worry to update the state manually because we have a listener to
   // onAuthStateChange observable that handle the same
   signInWithEmailAndPassword (context, {email, password}) {
     return firebase.auth().signInWithEmailAndPassword(email, password)
+  },
+
+  signInWithGoogle ({dispatch}) {
+    // instance of the provider
+    const provider = new firebase.auth.GoogleAuthProvider()
+    return firebase.auth().signInWithPopup(provider)
+      .then(data => {
+        // get the user
+        const user = data.user
+        // check if user already exists in our db
+        firebase.database().ref('users').child(user.uid).once('value', snapshot => {
+          if (!snapshot.exists()) { // false if the user registered now
+            // create the user
+            return dispatch('createUser', {id: user.uid, name: user.displayName, email: user.email, username: user.email, avatar: user.photoURL})
+              .then(() => dispatch('fetchAuthUser'))
+          }
+        })
+      })
   },
 
   signOut ({commit}) {
@@ -154,11 +170,21 @@ export default {
   fetchAuthUser ({dispatch, commit}) {
     // we assume user is signed in with firebase
     const userId = firebase.auth().currentUser.uid
-    // with the id we fetch the authenticated user and then update the authId in the state
-    return dispatch('fetchUser', {id: userId})
-      .then(() => {
-        commit('setAuthId', userId) // to set user id in the store as the signed in user
+    // observer will fetch user only when sign in
+    return new Promise((resolve, reject) => {
+      // check if user exists in the db
+      firebase.database().ref('users').child(userId).once('value', snapshot => {
+        if (snapshot.exists()) {
+          return dispatch('fetchUser', {id: userId})
+            .then(user => {
+              commit('setAuthId', userId)
+              resolve(user)
+            })
+        } else {
+          resolve(null)
+        }
       })
+    })
   },
 
   fetchCategory: ({dispatch}, {id}) => dispatch('fetchItem', {resource: 'categories', id, emoji: '🏷'}),
