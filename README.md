@@ -691,6 +691,13 @@ When some parts of your code will be used in different places of your applicatio
 
 - To navigate to an specific component we can push the route like this `this.$router.push({name: 'Profile'})` see `UserProfileCardEditor.vue` file for reference
 
+#### Class binding
+
+- [Reference to class binding](https://vuejs.org/v2/guide/class-and-style.html)
+- To manipulate a _class_ or _style_ property in an element
+- Using `v-bind:class` or the shortcut `:class`
+- Can be do using [object syntax](https://vuejs.org/v2/guide/class-and-style.html#Object-Syntax) or [array syntax](https://vuejs.org/v2/guide/class-and-style.html#Array-Syntax)
+
 #### Working with async data
 
 - Data is loaded in different speed and as a result can appear in random order
