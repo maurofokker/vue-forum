@@ -23,6 +23,15 @@ const config = {
 }
 firebase.initializeApp(config)
 
+// subscribing to the auth observable instead
+// ensures that it will have the user before trying to use its properties
+// so we keep the session through firebase
+firebase.auth().onAuthStateChanged(user => {
+  if (user) {
+    store.dispatch('fetchAuthUser')
+  }
+})
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

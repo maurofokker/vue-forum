@@ -136,6 +136,18 @@ export default {
     commit('setUser', {userId: user['.key'], user})
   },
 
+  // we need to be sure that the user is fetched before updating the authId
+  // this is accomplished bc we subscribe to the onAuthStateChanged observable in main.js
+  fetchAuthUser ({dispatch, commit}) {
+    // we assume user is signed in with firebase
+    const userId = firebase.auth().currentUser.uid
+    // with the id we fetch the authenticated user and then update the authId in the state
+    return dispatch('fetchUser', {id: userId})
+      .then(() => {
+        commit('setAuthId', userId) // to set user id in the store as the signed in user
+      })
+  },
+
   fetchCategory: ({dispatch}, {id}) => dispatch('fetchItem', {resource: 'categories', id, emoji: '🏷'}),
   fetchForum: ({dispatch}, {id}) => dispatch('fetchItem', {resource: 'forums', id, emoji: '🌧'}),
   fetchThread: ({dispatch}, {id}) => dispatch('fetchItem', {resource: 'threads', id, emoji: '📄'}),
