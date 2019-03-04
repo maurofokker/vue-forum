@@ -12,6 +12,7 @@
     "db:seed": "firebase database:set / src/data.json -y"
   },
   "dependencies": {
+    "dotenv": "^6.2.0",
     "firebase": "^5.8.4",
     "moment": "^2.24.0",
     "vue": "^2.5.2",
