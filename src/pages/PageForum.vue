@@ -24,11 +24,14 @@
 
 <script>
 import ThreadList from '@/components/ThreadList'
+import {mapActions} from 'vuex'
+import asyncDataStatus from '@/mixins/asyncDataStatus'
 
 export default {
   components: {
     ThreadList
   },
+  mixins: [asyncDataStatus],
   props: {
     id: {
       required: true,
@@ -44,15 +47,14 @@ export default {
         .filter(thread => thread.forumId === this.id)
     }
   },
-
+  methods: {
+    ...mapActions(['fetchForum', 'fetchThreads', 'fetchUser'])
+  },
   created () {
-    this.$store.dispatch('fetchForum', {id: this.id})
-      .then(forum => {
-        this.$store.dispatch('fetchThreads', {ids: forum.threads})
-          .then(threads => {
-            threads.forEach(thread => this.$store.dispatch('fetchUser', {id: thread.userId}))
-          })
-      })
+    this.fetchForum({id: this.id})
+      .then(forum => this.fetchThreads({ids: forum.threads}))
+      .then(threads => Promise.all(threads.map(thread => this.fetchUser({id: thread.userId}))))
+      .then(() => { this.asyncDataStatus_fetched() })
   }
 }
 </script>
