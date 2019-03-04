@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/pages/PageHome'
 import Profile from '@/pages/PageProfile'
+import Register from '@/pages/PageRegister'
 import ThreadShow from '@/pages/PageThreadShow'
 import ThreadCreate from '@/pages/PageThreadCreate'
 import ThreadEdit from '@/pages/PageThreadEdit'
@@ -59,6 +60,11 @@ export default new Router({
       name: 'ProfileEdit',
       component: Profile,
       props: {edit: true}
+    },
+    {
+      path: '/register',
+      name: 'Register',
+      component: Register
     },
     {
       path: '*',
