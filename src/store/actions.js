@@ -63,19 +63,33 @@ export default {
     })
   },
 
-  createUser ({state, commit}, {email, name, username, avatar = null}) {
+  createUser ({state, commit}, {id, email, name, username, avatar = null}) {
     return new Promise((resolve, reject) => {
       const registeredAt = Math.floor(Date.now() / 1000)
       const usernameLower = username.toLowerCase()
       email = email.toLowerCase()
       const user = {avatar, email, name, username, usernameLower, registeredAt}
-      const userId = firebase.database().ref('users').push().key
-      firebase.database().ref('users').child(userId).set(user)
+      console.log('uid: ', id, 'user -> ', user)
+      // const userId = firebase.database().ref('users').push().key
+      // firebase.database().ref('users').child(userId).set(user)
+      // will use id passed from the component that is the firebase user uid auth
+      firebase.database().ref('users').child(id).set(user)
         .then(() => {
-          commit('setItem', {resource: 'users', id: userId, item: user})
-          resolve(state.users[userId])
+          commit('setItem', {resource: 'users', id: id, item: user})
+          resolve(state.users[id])
         })
     })
+  },
+
+  registerUserWithEmailAndPassword ({dispatch}, {email, name, username, password, avatar = null}) {
+    return firebase.auth().createUserWithEmailAndPassword(email, password)
+      .then(function (response) {
+        const user = response.user
+        return dispatch('createUser', {id: user.uid, email, name, username, password, avatar})
+      })
+      // .then(({user}) => {
+      //   return dispatch('createUser', {id: user.uid, email, name, username, password, avatar})
+      // })
   },
 
   updateThread ({state, commit, dispatch}, {title, text, id}) {
