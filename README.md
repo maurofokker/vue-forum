@@ -947,6 +947,13 @@ Using the official _VueJS_ router plugin `vue-router` allows to create _SPA_ map
   })
   ```
 
+#### Using navigation guards
+
+- Used to guard navigations either by redirecting it or canceling it
+- There are a number of ways to hook into the route navigation process: globally, per-route, or in-component
+- [In component guards](https://router.vuejs.org/guide/advanced/navigation-guards.html#in-component-guards)
+- Watch `PageProfile.vue` or `PageThreadCreate`
+
 ### CSS Modules
 
 - Theme and Scoped CSS Styling is essential in a scalable Vue application
