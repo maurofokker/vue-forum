@@ -14,7 +14,9 @@ import Category from '@/pages/PageCategory'
 
 Vue.use(Router)
 
-export default new Router({
+// to define global guards in the router file we need to define router instance
+// we store router in a variable instead exported directly the instance
+const router = new Router({
   routes: [
     {
       path: '/',
@@ -56,13 +58,15 @@ export default new Router({
       name: 'Profile',
       component: Profile,
       props: true,
-      beforeEnter (to, from, next) {
-        if (store.state.authId) {
-          next()
-        } else {
-          next({name: 'Home'})
-        }
-      }
+      meta: {requiresAuth: true}//, introduce meta that allow to identify the route and take actions
+      // protecting route using per-route guard
+      // beforeEnter (to, from, next) {
+      //   if (store.state.authId) {
+      //     next()
+      //   } else {
+      //     next({name: 'Home'})
+      //   }
+      // }
     },
     {
       path: '/me/edit',
@@ -96,3 +100,24 @@ export default new Router({
   ],
   mode: 'history'
 })
+
+// protecting route with global nav guard and meta field to identify route
+router.beforeEach((to, from, next) => {
+  console.log(`Navigating to ${to.name} from ${from.name}`)
+  // check meta in route this will not work for nested routes i.e /me/nested
+  // if (to.meta.requiresAuth) {
+  // to make it work with nested data we use _.matched_ this will look all routes that match /me and /me/nested
+  // and if we use the _some_ function we can look for the meta field and now we are protected in nested routes
+  if (to.matched.some(route => route.meta.requiresAuth)) {
+    // protected route
+    if (store.state.authId) {
+      next()
+    } else {
+      next({name: 'Home'})
+    }
+  } else {
+    next() // to resolve the navigation, nor forget it
+  }
+})
+
+export default router

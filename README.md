@@ -993,6 +993,59 @@ Using the official _VueJS_ router plugin `vue-router` allows to create _SPA_ map
       mode: 'history'
     })
   ```
+- [Global nav guards with meta fields](https://router.vuejs.org/guide/advanced/meta.html)
+  - Meta fields allows us to identify routes and take actions on them
+  - Checking meta field in the `to | from` (_to.meta.[meta_field]_) will not work with nested routes
+  - To work with nested routes we need to use _to|from.matched.some(route => route.meta.[meta_field])_
+```js
+// to define global guards in the router file we need to define router instance
+// we store router in a variable instead exported directly the instance
+const router = new Router({
+  routes: [
+    {
+      path: '/',
+      name: 'Home',
+      component: Home
+    },
+    {
+      path: '/me',
+      name: 'Profile',
+      component: Profile,
+      props: true,
+      meta: {requiresAuth: true},
+      children: [
+        {
+          path: 'nested',
+          component: Profile//,
+          // meta: { requiresAuth: true } // this could work but is not an elegant solution
+        }
+      ]
+    }
+  ],
+  mode: 'history'
+})
+
+// protecting route with global nav guard and meta field to identify route
+router.beforeEach((to, from, next) => {
+  console.log(`Navigating to ${to.name} from ${from.name}`)
+  // check meta in route this will not work for nested routes i.e /me/nested
+  // if (to.meta.requiresAuth) {
+  // to make it work with nested data we use _.matched_ this will look all routes that match /me and /me/nested
+  // and if we use the _some_ function we can look for the meta field and now we are protected in nested routes
+  if (to.matched.some(route => route.meta.requiresAuth)) {
+    // protected route
+    if (store.state.authId) {
+      next()
+    } else {
+      next({name: 'Home'})
+    }
+  } else {
+    next() // to resolve the navigation, nor forget it
+  }
+})
+
+export default router
+```
 
 ### CSS Modules
 
