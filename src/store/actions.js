@@ -22,6 +22,30 @@ export default {
       })
   },
 
+  initAuthentication ({dispatch, commit, state}) {
+    // we need to unsubscribe bc every time we visit a page creates a new observer
+    // so we need to turn off the current observer before creating a new one
+    // unsubscribe observer if already listening
+    if (state.unsubscribeAuthObserver) {
+      state.unsubscribeAuthObserver()
+    }
+    return new Promise((resolve, reject) => {
+      const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+        console.log('👣 the user has changed')
+        if (user) {
+          dispatch('fetchAuthUser')
+            // is a good practice to wait for the authenticated user to be fetched from db before resolve the nav
+            // so we know that we always have a user in the page component
+            // resolve the user coming from the db
+            .then(dbUser => resolve(dbUser))
+        } else {
+          resolve(null) // if no user then resolve null
+        }
+      })
+      commit('setUnsubscribeAuthObserver', unsubscribe)
+    })
+  },
+
   createThread ({commit, state, dispatch}, {text, title, forumId}) {
     return new Promise((resolve, reject) => {
       // const threadId = 'greatThread' + Math.random()

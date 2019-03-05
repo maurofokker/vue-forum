@@ -104,20 +104,23 @@ const router = new Router({
 // protecting route with global nav guard and meta field to identify route
 router.beforeEach((to, from, next) => {
   console.log(`Navigating to ${to.name} from ${from.name}`)
-  // check meta in route this will not work for nested routes i.e /me/nested
-  // if (to.meta.requiresAuth) {
-  // to make it work with nested data we use _.matched_ this will look all routes that match /me and /me/nested
-  // and if we use the _some_ function we can look for the meta field and now we are protected in nested routes
-  if (to.matched.some(route => route.meta.requiresAuth)) {
-    // protected route
-    if (store.state.authId) {
-      next()
-    } else {
-      next({name: 'Home'})
-    }
-  } else {
-    next() // to resolve the navigation, nor forget it
-  }
+
+  // we need to wait for the firebase observer to trigger in order to know if user is authenticated
+  // if the auth is initialized through an ajax call we would perform the call here
+  // by most likely dispatching an action and then proceding with a navigation when the promise get resolve
+  store.dispatch('initAuthentication')  // init authentication for all the routes
+    .then(user => {
+      if (to.matched.some(route => route.meta.requiresAuth)) {
+        // protected route
+        if (user) {
+          next()
+        } else {
+          next({name: 'Home'})
+        }
+      } else {
+        next() // to resolve the navigation, nor forget it
+      }
+    })
 })
 
 export default router

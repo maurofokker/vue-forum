@@ -31,6 +31,10 @@ export default {
     state.authId = id
   },
 
+  setUnsubscribeAuthObserver (state, unsubscribe) {
+    state.unsubscribeAuthObersever = unsubscribe
+  },
+
   // appendPostToThread (state, {postId, threadId}) {
   //   // Vue.set(this.thread.posts, postId, postId)
   //   const thread = state.threads[threadId]
