@@ -60,7 +60,6 @@
 </template>
 
 <script>
-
 export default {
   props: {
     user: {
@@ -76,10 +75,10 @@ export default {
 
   computed: {
     userThreadsCount () {
-      return this.$store.getters.userThreadsCount(this.user['.key'])
+      return this.$store.getters['users/userThreadsCount'](this.user['.key'])
     },
     userPostsCount () {
-      return this.$store.getters.userPostsCount(this.user['.key'])
+      return this.$store.getters['users/userPostsCount'](this.user['.key'])
     }
   },
 
@@ -88,7 +87,7 @@ export default {
       // we need to dispatch an action that will trigger a mutation to update the user profile
       // we need to clone the object bc it will be set it to Vue.set in the mutation and will
       // bind the active user with the user inside the state.. so we need to clone it before setting in to the state
-      this.$store.dispatch('updateUser', {...this.activeUser})
+      this.$store.dispatch('users/updateUser', {...this.activeUser})
       this.$router.push({name: 'Profile'})
     },
 

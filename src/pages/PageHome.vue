@@ -19,11 +19,13 @@ export default {
   mixins: [asyncDataStatus],
   computed: {
     categories () {
-      return Object.values(this.$store.state.categories)
+      return Object.values(this.$store.state.categories.items) // items in the categories module
     }
   },
   methods: {
-    ...mapActions(['fetchAllCategories', 'fetchForums'])
+    // using namespaces ...mapActions(namespace, [actions])
+    ...mapActions('categories', ['fetchAllCategories']),
+    ...mapActions('forums', ['fetchForums'])
   },
 
   created () {

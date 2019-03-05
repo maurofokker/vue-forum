@@ -1,5 +1,4 @@
 import firebase from 'firebase'
-import {removeEmptyProperties} from '@/utils'
 
 export default {
   fetchItem ({state, commit}, {id, emoji, resource}) {
@@ -8,7 +7,7 @@ export default {
       firebase.database().ref(resource).child(id).once('value', snapshot => {
         commit('setItem', {resource, id: snapshot.key, item: snapshot.val()})
         // setTimeout(() => resolve(state[resource][id]), 1000)
-        resolve(state[resource][id])
+        resolve(state[resource].items[id])
       })
     })
   },

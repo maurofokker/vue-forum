@@ -50,19 +50,19 @@ export default {
 
   computed: {
     ...mapGetters({
-      authUser: 'authUser'
+      authUser: 'auth/authUser'
     }),
 
     thread () {
-      return this.$store.state.threads[this.id]
+      return this.$store.state.threads.items[this.id]
     },
 
     repliesCount () {
-      return this.$store.getters.threadRepliesCount(this.thread['.key'])
+      return this.$store.getters['threads/threadRepliesCount'](this.thread['.key'])
     },
 
     user () {
-      return this.$store.state.users[this.thread.userId]
+      return this.$store.state.users.items[this.thread.userId]
     },
 
     contributorsCount () {
@@ -79,12 +79,14 @@ export default {
 
     posts () {
       const postIds = Object.values(this.thread.posts)
-      return Object.values(this.$store.state.posts)
+      return Object.values(this.$store.state.posts.items)
         .filter(post => postIds.includes(post['.key']))
     }
   },
   methods: {
-    ...mapActions(['fetchThread', 'fetchUser', 'fetchPosts'])
+    ...mapActions('threads', ['fetchThread']),
+    ...mapActions('users', ['fetchUser']),
+    ...mapActions('posts', ['fetchPosts'])
   },
   // hooks lifecycles
   created () {

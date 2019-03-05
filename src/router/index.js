@@ -114,7 +114,7 @@ router.beforeEach((to, from, next) => {
   // we need to wait for the firebase observer to trigger in order to know if user is authenticated
   // if the auth is initialized through an ajax call we would perform the call here
   // by most likely dispatching an action and then proceding with a navigation when the promise get resolve
-  store.dispatch('initAuthentication')  // init authentication for all the routes
+  store.dispatch('auth/initAuthentication')  // init authentication for all the routes
     .then(user => {
       if (to.matched.some(route => route.meta.requiresAuth)) {
         // protected route

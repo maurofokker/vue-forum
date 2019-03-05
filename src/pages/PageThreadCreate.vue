@@ -34,7 +34,7 @@ export default {
 
   computed: {
     forum () {
-      return this.$store.state.forums[this.forumId]
+      return this.$store.state.forums.items[this.forumId]
     },
     // check if any of the thread information is set and the thread has not been saved
     hasUnsavedChanges () {
@@ -45,7 +45,8 @@ export default {
   },
 
   methods: {
-    ...mapActions(['createThread', 'fetchForum']),
+    ...mapActions('threads', ['createThread']),
+    ...mapActions('forums', ['fetchForum']),
     save ({title, text}) {
       // dispatch action
       this.createThread({

@@ -1,4 +1,4 @@
-import Vue from 'vue/types/vue'
+import Vue from 'vue'
 
 export const makeAppendChildToParentMutation = ({parent, child}) =>
   (state, {childId, parentId}) => {

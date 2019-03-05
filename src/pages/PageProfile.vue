@@ -47,17 +47,17 @@ export default {
 
   computed: {
     ...mapGetters({
-      'user': 'authUser'  // user maps to authUser getter in the store
+      'user': 'auth/authUser'  // user maps to authUser getter in the store
     }),
 
     userPosts () {
-      return this.$store.getters.userPosts(this.user['.key'])
+      return this.$store.getters['users/userPosts'](this.user['.key'])
     }
   },
 
   created () {
     // fetch the user posts before emit the ready event
-    this.$store.dispatch('fetchPosts', {ids: this.user.posts})
+    this.$store.dispatch('posts/fetchPosts', {ids: this.user.posts})
       .then(() => this.asyncDataStatus_fetched())
   }
 
