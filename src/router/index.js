@@ -39,7 +39,8 @@ const router = new Router({
       path: '/threads/create/:forumId',  // this one goes first bc the next one is a dynamic segment and it is evaluated top to bottom
       name: 'ThreadCreate',
       component: ThreadCreate,
-      props: true
+      props: true,
+      meta: {requiresAuth: true}
     },
     {
       path: '/threads/:id',
@@ -51,7 +52,8 @@ const router = new Router({
       path: '/threads/:id/edit',
       name: 'ThreadEdit',
       component: ThreadEdit,
-      props: true
+      props: true,
+      meta: {requiresAuth: true}
     },
     {
       path: '/me',
@@ -72,21 +74,25 @@ const router = new Router({
       path: '/me/edit',
       name: 'ProfileEdit',
       component: Profile,
-      props: {edit: true}
+      props: {edit: true},
+      meta: {requiresAuth: true}
     },
     {
       path: '/register',
       name: 'Register',
-      component: Register
+      component: Register,
+      meta: {requiresGuest: true}
     },
     {
       path: '/signin',
       name: 'SignIn',
-      component: SignIn
+      component: SignIn,
+      meta: {requiresGuest: true}
     },
     {
       path: '/logout',
       name: 'SignOut',
+      meta: {requiresAuth: true},
       beforeEnter (to, from, next) {
         store.dispatch('signOut')
           .then(() => next({name: 'Home'}))
@@ -113,6 +119,13 @@ router.beforeEach((to, from, next) => {
       if (to.matched.some(route => route.meta.requiresAuth)) {
         // protected route
         if (user) {
+          next()
+        } else {
+          next({name: 'SignIn'})
+        }
+      } else if (to.matched.some(route => route.meta.requiresGuest)) {
+        // protected route
+        if (!user) {
           next()
         } else {
           next({name: 'Home'})
