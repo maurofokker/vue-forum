@@ -3,6 +3,7 @@
     <h1>Editing <i>{{thread.title}}</i></h1>
 
     <ThreadEditor
+      ref="editor"
       :title="thread.title"
       :text="text"
       @save="save"
@@ -38,6 +39,11 @@ export default {
     text () {
       const post = this.$store.state.posts[this.thread.firstPostId]
       return post ? post.text : null
+    },
+    hasUnsavedChanges () {
+      // this.saved is not required in this implementation because `this.thread.title` and `this.text` are reactive
+      // Thus `hasUnsavedChanges` will automatically become false when the thread is updated
+      return this.$refs.editor.form.title !== this.thread.title || this.$refs.editor.form.text !== this.text
     }
   },
 
@@ -64,6 +70,19 @@ export default {
     this.fetchThread({id: this.id})
       .then(thread => this.fetchPost({id: thread.firstPostId}))
       .then(() => { this.asyncDataStatus_fetched() })
+  },
+
+  beforeRouteLeave (to, from, next) {
+    if (this.hasUnsavedChanges) {
+      const confirmed = window.confirm('Are you sure you want to leave? Any unsaved changes will be lost!')
+      if (confirmed) {
+        next()
+      } else {
+        next(false)
+      }
+    } else {
+      next()
+    }
   }
 }
 </script>

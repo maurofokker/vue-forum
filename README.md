@@ -504,6 +504,15 @@ export default {
   </script>
   ```
 
+#### Accessing child components instances and child elements
+
+- You can use _refs_ to access child component directly
+- It can be done using `ref` attribute
+  - `<ThreadEditor ref="editor" @save="save" @cancel="cancel" />`
+- To access child elements
+  - `this.$refs.editor.form.title`
+- [Vue Accessing Child Component Instances & Child Elements](https://vuejs.org/v2/guide/components-edge-cases.html#Accessing-Child-Component-Instances-amp-Child-Elements)
+
 #### Using filters
 
 - You can use filters that can be used to apply text formating like dates
