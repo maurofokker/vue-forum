@@ -961,7 +961,38 @@ Using the official _VueJS_ router plugin `vue-router` allows to create _SPA_ map
 - Used to guard navigations either by redirecting it or canceling it
 - There are a number of ways to hook into the route navigation process: globally, per-route, or in-component
 - [In component guards](https://router.vuejs.org/guide/advanced/navigation-guards.html#in-component-guards)
-- Watch `PageProfile.vue` or `PageThreadCreate`
+  - Watch `PageProfile.vue` or `PageThreadCreate`
+- [Per route guards](https://router.vuejs.org/guide/advanced/navigation-guards.html#per-route-guard)
+  - There is no need to have component (most of the time an empty with just hooks) to handle some actions like logout
+  - This is done in the root of the routes `src/router/index.js`
+  ```js
+    export default new Router({
+      routes: [
+        {
+          path: '/me',
+          name: 'Profile',
+          component: Profile,
+          props: true,
+          beforeEnter (to, from, next) {
+            if (store.state.authId) {
+              next()
+            } else {
+              next({name: 'Home'})
+            }
+          }
+        },
+        {
+          path: '/logout',
+          name: 'SignOut',
+          beforeEnter (to, from, next) {
+            store.dispatch('signOut')
+              .then(() => next({name: 'Home'}))
+          }
+        }
+      ],
+      mode: 'history'
+    })
+  ```
 
 ### CSS Modules
 

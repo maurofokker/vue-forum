@@ -27,7 +27,6 @@ import PostList from '@/components/PostList'
 import UserProfileCard from '@/components/UserProfileCard'
 import UserProfileCardEditor from '@/components/UserProfileCardEditor'
 import { mapGetters } from 'vuex'
-import store from '@/store'
 
 export default {
 
@@ -55,21 +54,6 @@ export default {
           .filter(post => post.userId === this.user['.key'])
       }
       return []
-    }
-  },
-
-  /*
-  to: is the route navigating to
-  from: is the route we are navigating away
-  next: function we have to run to resolve the navigation
-   */
-  beforeRouteEnter (to, from, next) {
-    // we can't use this.$store... bc at this point the component is not created yet
-    // so we don't have access to _this_ and we need to import the store (the current not new instance)
-    if (store.state.authId) { // if user authenticated continue
-      next()
-    } else {  // redirect to home page if user is not authenticated
-      next({name: 'Home'})
     }
   },
 

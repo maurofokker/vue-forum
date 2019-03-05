@@ -14,7 +14,7 @@ export default new Vuex.Store({
     threads: {},
     posts: {},
     users: {},
-    authId: 'something' // fake auth user to test navigation guard and enter /me
+    authId: null
   },
 
   getters,
