@@ -121,7 +121,7 @@ router.beforeEach((to, from, next) => {
         if (user) {
           next()
         } else {
-          next({name: 'SignIn'})
+          next({name: 'SignIn', query: {redirectTo: to.path}}) // add query string to redirect the user were they wanted to go after sign in
         }
       } else if (to.matched.some(route => route.meta.requiresGuest)) {
         // protected route

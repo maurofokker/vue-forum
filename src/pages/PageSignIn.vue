@@ -46,13 +46,18 @@
           email: this.form.email,
           password: this.form.password
         })
-          .then(() => this.$router.push('/')) // redirect if sign in is success
+          .then(() => this.successRedirect()) // redirect if sign in is success
           .catch(error => alert(':/ ' + error.message)) // alert error
       },
       signInWithGoogle () {
         this.$store.dispatch('signInWithGoogle')
-          .then(() => this.$router.push('/'))
+          .then(() => this.successRedirect())
           .catch(error => alert('🤷‍️' + error.message))
+      },
+      successRedirect () {
+        // $route is the active route while $router is the global router
+        const redirectTo = this.$route.query.redirectTo || {name: 'Home'}
+        this.$router.push(redirectTo)
       }
     },
 
