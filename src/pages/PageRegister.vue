@@ -77,8 +77,8 @@
 </template>
 
 <script>
-  import firebase from 'firebase'
-  import {required, email, minLength, url, helpers as vuelidateHelpers} from 'vuelidate/lib/validators'
+  import {required, email, minLength, url} from 'vuelidate/lib/validators'
+  import {uniqueEmail, uniqueUsername, responseOk, supportedImageFile} from '@/utils/validators'
 
   export default {
     data () {
@@ -99,34 +99,12 @@
         },
         username: {
           required,
-          unique (value) {  // async check if username is unique
-            if (!vuelidateHelpers.req(value)) {
-              return true
-            }
-            return new Promise((resolve, reject) => {
-              // in firebase in order to query a "table" by the value of a child property we first order that table
-              // by that property using orderByChild method
-              firebase.database().ref('users').orderByChild('usernameLower').equalTo(value.toLowerCase())
-                // listen the value event
-                .once('value', snapshot => resolve(!snapshot.exists()))
-            })
-          }
+          unique: uniqueUsername
         },
         email: {
           required,
           email,
-          unique (value) {
-            if (!vuelidateHelpers.req(value)) {
-              return true
-            }
-            return new Promise((resolve, reject) => {
-              // in firebase in order to query a "table" by the value of a child property we first order that table
-              // by that property using orderByChild method
-              firebase.database().ref('users').orderByChild('email').equalTo(value.toLowerCase())
-              // listen the value event
-                .once('value', snapshot => resolve(!snapshot.exists()))
-            })
-          }
+          unique: uniqueEmail
         },
         password: {
           required,
@@ -134,24 +112,8 @@
         },
         avatar: {
           url,
-          supportedImageFile (value) {
-            if (!vuelidateHelpers.req(value)) {
-              return true
-            }
-            const supported = ['jpg', 'jpeg', 'gif', 'png', 'svg']
-            const suffix = value.split('.').pop()
-            return supported.includes(suffix)
-          },
-          responseOk (value) {
-            if (!vuelidateHelpers.req(value)) {
-              return true
-            }
-            return new Promise((resolve, reject) => {
-              fetch(value)
-                .then(response => resolve(response.ok))
-                .catch(() => resolve(false))
-            })
-          }
+          supportedImageFile,
+          responseOk
         }
       }
     },
