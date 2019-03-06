@@ -6,7 +6,9 @@ import App from './App'
 import router from './router'
 import AppDate from '@/components/AppDate'
 import store from '@/store'
+import vuelidate from 'vuelidate'
 
+Vue.use(vuelidate)  // to add vuelidate to vue global
 Vue.component('AppDate', AppDate)
 
 Vue.config.productionTip = false
